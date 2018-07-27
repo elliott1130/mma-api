@@ -1,0 +1,138 @@
+from bs4 import BeautifulSoup
+import pandas as pd
+import requests, re
+from urllib.parse import urljoin
+import csv
+
+workbook = open('MMA Fighter NamesUSE.csv', encoding='utf-8')
+reader = csv.reader(workbook)
+api = 'https://mma.now.sh/?fighter={}'
+
+nameList=[]
+nicknameList=[]
+fullnameList=[]
+recordList=[]
+associationList=[]
+ageList=[]
+birthdayList=[]
+hometownList=[]
+nationalityList=[]
+locationList=[]
+heightList =[]
+height_cmList=[]
+weightList=[]
+weight_kgList=[]
+weight_classList=[]
+collegeList=[]
+degreeList=[]
+summaryList=[]
+
+for row in reader:
+   # try:
+        r = requests.get(api.format(row))
+        dataform = str(r).strip("'<>() ").replace('\'', '\"')
+        data = dataform.json()
+        
+        try:
+            name = data['name']
+        except AttributeError: name =""
+        try:
+            nickname = data['nickname']
+        except AttributeError: nickname =""
+        try:
+            fullName = data['fullname']
+        except AttributeError: fullname =""
+        try:
+            record = data['record']
+        except AttributeError: record =""
+        try:
+            association = data['association']
+        except AttributeError: association =""
+        try:
+            age = data['age']
+        except AttributeError: age =""
+        try:
+            birthday = data['birthday']
+        except AttributeError: birthday =""
+        try:
+            hometown = data['hometown']
+        except AttributeError: hometown =""
+        try:
+            nationality = data['nationality']
+        except AttributeError: nationality =""
+        try:
+            location = data['location']
+        except AttributeError: location =""
+        try:
+            height = data['height']
+        except AttributeError: height =""
+        try:
+            height_cm = data['height_cm']
+        except AttributeError: height_cm =""
+        try:
+            weight = data['weight']
+        except AttributeError: weight =""
+        try:
+            weight_kg = data['weight_kg']
+        except AttributeError: weight_kg =""
+        try:
+            weight_class = data['weight_class']
+        except AttributeError: weight_class =""
+        try:
+            college = data['college']
+        except AttributeError: college =""
+        try:
+            degree = data['degree']
+        except AttributeError: degree =""
+        try:
+            summary = data['summary']
+        except AttributeError: summary =""
+
+
+        nameList.append(name)
+        nicknameList.append(nickname)
+        fullnameList.append(fullName)
+        recordList.append(record)
+        associationList.append(association)
+        ageList.append(age)
+        birthdayList.append(birthday)
+        hometownList.append(hometown)
+        nationalityList.append(nationality)
+        locationList.append(location)
+        heightList.append(height)
+        height_cmList.append(height_cm)
+        weightList.append(weight)
+        weight_kgList.append(weight_kg)
+        weight_classList.append(weight_class)
+        collegeList.append(college)
+        degreeList.append(degree)
+        summaryList.append(summary)
+
+        print(name)
+        
+    #except ValueError:
+    #    continue
+    
+    
+df = pd.DataFrame()
+df['name']=nameList
+df['nickname']=nicknameList
+df['fullname']=fullnameList
+df['record']=recordList
+df['association']=associationList
+df['age']=ageList
+df['birthday']=birthdayList
+df['hometown']=hometownList
+df['nationality']=nationalityList
+df['location']=locationList
+df['height']=heightList
+df['heightCM']=height_cmList
+df['weight']=weightList
+df['weightKG']=weight_kgList
+df['weight_class']=weight_classList
+df['college']=collegeList
+df['degree']=degreeList
+df['summary']=summaryList
+
+
+df.to_csv('Fighters.csv', index=False)
